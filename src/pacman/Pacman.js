@@ -35,7 +35,39 @@ class Pacman extends Component {
     const currentLeft = this.state.position.left;
 
     // TODO: move pacman
-    
+    if (event.key === 'ArrowUp') {
+      this.setState({
+        position: {
+          top: Math.max(currentTop - this.props.step, 0),
+          left: currentLeft
+        },
+        direction: 'up'
+      });
+    } else if (event.key === 'ArrowRight') {
+      this.setState({
+        position: {
+          top: currentTop,
+          left: Math.min(currentLeft + this.props.step, window.innerWidth - this.props.border - this.props.size)
+        },
+        direction: 'right'
+      });
+    } else if (event.key === 'ArrowDown') {
+      this.setState({
+        position: {
+          top: Math.min(currentTop + this.props.step, window.innerHeight - this.props.size - this.props.border - this.props.topScoreBoard),
+          left: currentLeft
+        },
+        direction: 'down'
+      });
+    } else if (event.key === 'ArrowLeft') {
+      this.setState({
+        position: {
+          top: currentTop,
+          left: Math.max(currentLeft - this.props.step, 0)
+        },
+        direction: 'left'
+      });
+    }
   }
 
   render() {

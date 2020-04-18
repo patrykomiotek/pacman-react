@@ -16,12 +16,18 @@ class Ghost extends Component {
 
   componentDidMount() {
     // TODO: uncomment me when necessary
-    // this.moveInterval = setInterval(this.move, 500);
-    // this.changeDirectionInterval = setInterval(this.changeDirection, 500);
+    this.moveInterval = setInterval(this.move, 500);
+    this.changeDirectionInterval = setInterval(
+      this.changeDirection, 500
+    );
   }
 
   changeDirection = () => {
     // TODO: implement change direction
+    const arrayOfMovement = ['left', 'up', 'down', 'right'];
+    const movement = Math.floor(Math.random() * 4);
+
+    this.setState({ direction: arrayOfMovement[movement] });
   }
 
   move = () => {
@@ -29,6 +35,36 @@ class Ghost extends Component {
     const currentLeft = this.state.position.left;
 
     // TODO: move ghost
+
+    if (this.state.direction === 'up') {
+      this.setState({
+        position: {
+          top: Math.max(currentTop - this.props.step, 0),
+          left: currentLeft
+        }
+      });
+    } else if (this.state.direction === 'right') {
+      this.setState({
+        position: {
+          top: currentTop,
+          left: Math.min(currentLeft + this.props.step, window.innerWidth - this.props.border - this.props.size)
+        }
+      });
+    } else if (this.state.direction === 'down') {
+      this.setState({
+        position: {
+          top: Math.min(currentTop + this.props.step, window.innerHeight - this.props.size - this.props.border - this.props.topScoreBoard),
+          left: currentLeft
+        }
+      });
+    } else if (this.state.direction === 'left') {
+      this.setState({
+        position: {
+          top: currentTop,
+          left: Math.max(currentLeft - this.props.step, 0)
+        }
+      });
+    }
  }
 
   render() {

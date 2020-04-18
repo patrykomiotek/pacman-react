@@ -28,14 +28,36 @@ class Board extends Component {
   }
 
   lookForEat = () => {
-    const pacmanX = this.pacmanRef.current.state.position.left;
-  const pacmanY = this.pacmanRef.current.state.position.top;
-  const pacmanSize = this.pacmanRef.current.props.size
-
-  const pacmanLastX = pacmanX + pacmanSize / 2;
-  const pacmanLastY = pacmanY + pacmanSize / 2;
-
     // TODO: implement food eating
+    const pacmanX = this.pacmanRef.current.state.position.left;
+    const pacmanY = this.pacmanRef.current.state.position.top;
+    const pacmanSize = this.pacmanRef.current.props.size
+
+    const pacmanLastX = pacmanX + pacmanSize / 2;
+    const pacmanLastY = pacmanY + pacmanSize / 2;
+
+    for (let i = 1; i <= this.amountOfFood; i++) {
+      const currentFood = this['food' + i].current;
+      if (currentFood) {
+        const currentFoodX = currentFood.state.position.left;
+        const currentFoodY = currentFood.state.position.top;
+        const currentFoodSize = currentFood.props.foodSize;
+        const currentFoodLastX = currentFoodX + currentFoodSize / 2;
+        const currentFoodLastY = currentFoodY + currentFoodSize / 2;
+
+        if (
+          (pacmanX >= currentFoodX && pacmanX <= currentFoodLastX)
+          || (pacmanLastX >= currentFoodX && pacmanLastX <= currentFoodLastX)) {
+          if ((pacmanY >= currentFoodY && pacmanY <= currentFoodLastY)
+            || (pacmanLastY >= currentFoodY && pacmanLastY <= currentFoodLastY)) {
+            if (!currentFood.state.hidden) {
+              currentFood.ate();
+              this.props.increase();
+            }
+          }
+        }
+      }
+    }
   }
 
   render() {
@@ -43,6 +65,28 @@ class Board extends Component {
 		let currentTop = 0;
     let currentLeft = 0;
 
+    for (let i = 0; i < this.amountOfFood; i++) {
+      if (
+        currentLeft + this.props.foodSize
+          >= window.innerWidth - this.props.border) {
+          currentTop += this.props.foodSize;
+          currentLeft = 0;
+      }
+
+      if (currentTop + this.props.foodSize
+          >= (window.innerHeight
+              - this.props.border
+              - this.props.topScoreBoard)) {
+          break;
+      }
+      const position = { left: currentLeft, top: currentTop };
+      currentLeft = currentLeft + this.props.foodSize;
+      foods.push(
+        <Food ref={this['food' + i]}
+        position={position}
+        key={i} />
+      );
+    }
 
     // TODO: implement food rendering
 
@@ -51,6 +95,7 @@ class Board extends Component {
           {foods}
           <Pacman ref={this.pacmanRef} />
           <Ghost color="blue"/>
+          <Ghost color="pink"/>
       </div>
     )
   }
