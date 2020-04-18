@@ -14,9 +14,10 @@ class Board extends Component {
 
     this.foods = [];
     this.amountOfFood = (
-      (window.innerWidth - this.props.border - this.props.foodSize)
-        * (window.innerHeight - this.props.border - this.props.topScoreBoard)
-    ) / (this.props.foodSize * this.props.foodSize);
+      (window.innerWidth - this.props.foodSize)
+        * (window.innerHeight - this.props.topScoreBoard)
+    ) / (this.props.foodSize * this.props.foodSize) - 1; // minus 1 because we substract pacman position
+
     for (let i = 0; i < this.amountOfFood; i++) {
       this['food' + i] = React.createRef();
     }
@@ -36,7 +37,7 @@ class Board extends Component {
     const pacmanLastX = pacmanX + pacmanSize / 2;
     const pacmanLastY = pacmanY + pacmanSize / 2;
 
-    for (let i = 1; i <= this.amountOfFood; i++) {
+    for (let i = 0; i <= this.amountOfFood; i++) {
       const currentFood = this['food' + i].current;
       if (currentFood) {
         const currentFoodX = currentFood.state.position.left;
@@ -61,11 +62,13 @@ class Board extends Component {
   }
 
   render() {
+    // TODO: implement food rendering
     let foods = [];
 		let currentTop = 0;
-    let currentLeft = 0;
+    let currentLeft = 1 * this.props.foodSize;
 
     for (let i = 0; i < this.amountOfFood; i++) {
+
       if (
         currentLeft + this.props.foodSize
           >= window.innerWidth - this.props.border) {
@@ -87,8 +90,6 @@ class Board extends Component {
         key={i} />
       );
     }
-
-    // TODO: implement food rendering
 
     return (
       <div className="board">
